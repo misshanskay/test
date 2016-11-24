@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 sdasdsaddwezwswzszws
+=======
+sdasdsa
+>>>>>>> parent of ee3269d... k;jn;

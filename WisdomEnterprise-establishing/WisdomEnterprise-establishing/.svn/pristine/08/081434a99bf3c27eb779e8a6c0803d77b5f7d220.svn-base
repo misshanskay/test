@@ -1,9 +1,0 @@
-#Update 'imgsrc' value
-#Mon Sep 12 17:43:59 CST 2016
-url=jdbc\:mysql\://localhost\:3306/WisdomEnterprise-establishing?characterEncoding\=utf8&allowMultiQueries\=true
-password=root
-abc=ikkjl
-driver=com.mysql.jdbc.Driver
-base=\u4EACIPC\u8BC1110801\u53F7|\u4EACICP\u590711036716\u53F7|\u4EAC\u516C\u7F51\u5B89\u590711010902000202\u53F7
-imgsrc=ikkjl
-username=root
