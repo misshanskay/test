@@ -1,0 +1,7 @@
+pagenumber=20
+url=jdbc\:mysql\://localhost\:3306/wisdomenerprise_establishing?characterEncoding\=utf8&allowMultiQueries\=true
+password=sirbox.cn
+driver=com.mysql.jdbc.Driver
+base=\u4EACIPC\u8BC1110801\u53F7|\u4EACICP\u590711036716\u53F7|\u4EAC\u516C\u7F51\u5B89\u590711010902000202\u53F7
+imgsrc=images/logo.png
+username=root

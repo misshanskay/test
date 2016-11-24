@@ -1,0 +1,106 @@
+package cn.sirbox.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.sirbox.dao.UserUMapper;
+import cn.sirbox.model.UserU;
+
+/**
+ * Created by X201 on 2016/8/26 0026.
+ */
+@Service
+public class UserUService {
+
+    @Autowired
+    private UserUMapper userUMapper;
+
+
+    public UserU getUserUById(Integer uid){
+
+       return userUMapper.getUserUById(uid);
+      //  return new UserU();
+    }
+
+    public UserU getUserUByName(String uname) {
+        return userUMapper.getUserUByName(uname);
+    }
+    public void insertSelective(UserU userU){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        userU.setEnabled(1);
+        userU.setStatus("government");
+        userU.setCreatetime(sdf.format(new Date()));
+        userU.setUpdatetime(sdf.format(new Date()));
+        userUMapper.insertUserU(userU);
+        userU.setUid(userUMapper.getUserUByName(userU.getUname()).getUid());
+        userUMapper.insertUserUExtend(userU);
+        userUMapper.insertUserUDept(userU);
+    }
+    public UserU getUserU(UserU userU) {
+        return userUMapper.getUserU(userU);
+    }
+
+    public List<UserU> selectAllUserU(Integer thispage) {
+        int page=thispage*5;
+        List<UserU> u=userUMapper.selectAllUserU(page);
+        return u;
+    }
+    public void deleteUserUById(Integer uid) {
+        userUMapper.deleteUserUById(uid);
+    }
+
+    public void updateByPrimaryKeySelective(UserU userU) {
+       // userUMapper.updateByPrimaryKeySelective(userU);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        userU.setUpdatetime(sdf.format(new Date()));
+        userUMapper.updateUserU(userU);
+        userUMapper.updateUserUExtend(userU);
+        userUMapper.updateUserUDept(userU);
+    }
+
+    public void addUserUPower(String uname,String power) {
+        userUMapper.addUserUPower(uname,power);
+    }
+
+	public List<String> getUserUPower(String uname) {
+		// TODO Auto-generated method stub
+		return userUMapper.getUserUPower(uname);
+	}
+
+	public void deleteUserUPower(String uname) {
+		// TODO Auto-generated method stub
+		userUMapper.deleteUserUPower(uname);
+	}
+
+	public List<UserU> getAllUserUDept() {
+		// TODO Auto-generated method stub
+		return userUMapper.getAllUserUDept();
+	}
+
+	public void updateDeptById(int uid, Integer did) {
+		// TODO Auto-generated method stub
+		userUMapper.updateDeptById(uid,did);
+	}
+
+    public Integer countByUserU() {
+        // TODO Auto-generated method stub
+        return userUMapper.countByUserU();
+    }
+
+    public String getUserUPart(Integer uid) {
+        // TODO Auto-generated method stub
+        return userUMapper.getUserUPart(uid);
+    }
+
+   
+    public void updateUserUImg(UserU userU) {
+        // TODO Auto-generated method stub
+        userUMapper.updateUserUImg(userU);
+    }
+
+   
+}

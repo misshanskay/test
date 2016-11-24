@@ -1,0 +1,72 @@
+package cn.sirbox.service.impl;
+
+import cn.sirbox.dao.RoleMapper;
+import cn.sirbox.dao.UserUMapper;
+import cn.sirbox.model.Role;
+import cn.sirbox.model.UserU;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * Created by X201 on 2016/9/1 0001.
+ */
+@Service
+public class myUserDetailsService implements UserDetailsService{
+    @Resource
+    private UserUMapper userUMapper;
+    @Resource
+    private RoleMapper roleMapper;
+   
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException, DataAccessException {
+    	try {
+			String uname= new String(s.getBytes("ISO-8859-1"),"UTF-8");
+			String[] str1 = uname.split(",");
+			
+			List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>(2);
+	        if("government".equals(str1[1])==true){
+	        	/*List<String>  role=roleMapper.getRoleByName(name);
+	            System.out.println(role.get(1));*/
+	           // System.out.println(str1[0]);
+	            UserU userU=userUMapper.getUserUByName(str1[0]);
+	           
+	            /*if(userU!=null){
+	            	Cookie cook=new Cookie("uname", userU.getUname());
+	            	Cookie cook1=new Cookie("upossword", userU.getUpassword());
+	            	
+	            	cook.setMaxAge(60*60*24*3);
+	            	cook1.setMaxAge(60*60*24*3);
+	            	
+	            }*/
+	            authList.add(new GrantedAuthorityImpl("ROLE_USER"));
+	            UserDetails user = new User(userU.getUname(),userU.getUpassword(),true,true,true,true,authList);
+	            return user;
+	        }else if("enterprise".equals(str1[1])==true){
+	            return null;
+	        }else{
+	            return null;
+	        }
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    	
+    	
+        
+    }
+}

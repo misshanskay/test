@@ -1,0 +1,186 @@
+package cn.sirbox.service.impl;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+
+import cn.sirbox.dao.AccountMapper;
+import cn.sirbox.dao.BookedMapper;
+import cn.sirbox.model.Account;
+import cn.sirbox.model.Booked;
+import cn.sirbox.model.BookedExample;
+import cn.sirbox.model.BookedQueryVo;
+import cn.sirbox.model.BookedExample.Criteria;
+import cn.sirbox.model.page;
+import cn.sirbox.service.BookedService;
+import cn.sirbox.utils.ArrayUtil;
+import cn.sirbox.utils.ExcelUtils;
+@Service
+public class BookedServiceImpl implements BookedService{
+	
+	@Autowired
+	private BookedMapper bookedMapper;
+	
+	@Autowired
+	private AccountMapper AccountMapper;
+	
+	@Override
+	public List<Booked> findAll(String thispage) {
+		
+		page page = new page();
+		page.setThispage(Integer.parseInt(thispage));
+		PageHelper.startPage(page.getStartPos(), page.getPagenumber());
+		Map<String ,Object> map = new HashMap<String, Object>();
+		map.put("ids", "");
+		return bookedMapper.selectByExamples(map);
+	}
+
+	@Override
+	public void exportFile(String ids, HttpServletResponse response) {
+		
+		Map map = new HashMap<String, Object>();
+		if(ids!=null&&!"".equals("")){
+			List<Integer> list = new ArrayList<Integer>();
+			ids=ids.substring(0, ids.length()-1);
+			String[] id = ids.split("\\,");
+			for(int i=0;i<id.length;i++){
+				list.add(Integer.parseInt(id[i]));
+			}
+			map.put("ids", list);
+		}else{
+			map.put("ids", "");
+		}
+		List<Booked> objs = bookedMapper.selectByExamples(map);
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		OutputStream os = null;
+		try {
+			String fileName = "入款列表" + df.format(new Date()) + ".xlsx";// 文件名称
+			os = response.getOutputStream();// 得到输出流outputStream是用来向客户端输入任何数据的
+			response.reset();// 清除首部的空白行
+			response.setHeader("Content-disposition", "attachment; filename = " + URLEncoder.encode(fileName, "UTF-8"));
+			response.setContentType("application/octet-streem");
+			os = response.getOutputStream();
+			ExcelUtils.getInstance().export2Excel(os, objs, Booked.class, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public boolean add(String userName,Booked booked,Integer num) {
+		
+		boolean flag = false;
+		Account account = getUserId(userName);
+		float balance = booked.getBalance();
+		booked.setUserId(account.getId());
+		if(account.getId()!=null){
+			booked = bookedMapper.selectByPrimaryKeys(booked);
+			if(booked!=null){
+				account.setBalance(balance+account.getBalance());
+				AccountMapper.updateByPrimaryKeySelective(account);
+				flag = true;		
+			}
+		}
+		return flag;
+	}
+	
+	protected  Account getUserId(String userName){
+		
+		return AccountMapper.selectByPrimaryKeys(userName);
+	
+		
+	}
+	
+	@Override
+	public List<Booked> expense(String thispage, BookedQueryVo bookedQueryVo) {
+		
+		BookedExample bookedExample = new BookedExample();
+		BookedExample.Criteria criteria = bookedExample.createCriteria();
+		criteria.andTypeEqualTo(2);
+		if(bookedQueryVo!=null){
+			if(!"".equals(bookedQueryVo.getUsername())){
+				Account account = getUserId(bookedQueryVo.getUsername());
+				criteria.andUserIdEqualTo(account.getId());
+			}
+			if(!"".equals(bookedQueryVo.getDealOne())&&!"".equals(bookedQueryVo.getDealTwo())){
+				criteria.andDealBetween(bookedQueryVo.getDealOne(), bookedQueryVo.getDealTwo());
+			}
+			if(!"".equals(bookedQueryVo.getProductType())){
+				criteria.andProductTypeLike(bookedQueryVo.getProductType());
+			}
+		}
+		
+		return bookedMapper.selectByExample(bookedExample);
+	}
+
+	@Override
+	public void add(String title,Integer uid,Integer type,float deal,float balance) {
+		
+		Booked booked = new Booked();
+		booked.setBalance(balance);
+		booked.setUserId(uid);
+		booked.setType(type);
+		booked.setDeal(deal);
+		booked.setCreateTime(new Date());
+		booked.setState(1);
+		UUID uuid = UUID.randomUUID();
+	    String number= uuid.toString().toString();
+	    number=number.substring(0,8)+number.substring(9,13)+number.substring(14,18)+number.substring(19,23)+number.substring(24);
+	    booked.setNumber(number);
+	    booked.setNote(number+title);
+	    bookedMapper.insertSelective(booked);		
+	}
+
+	@Override
+	public Map<String, Object> find(String username, String createtimeone,
+			String createtimetwo, String way) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		BookedQueryVo bookedQueryVo = new  BookedQueryVo();
+		if(username!=null&&!"".equals(username)){
+			bookedQueryVo.setUsername(username);
+		}
+		
+		if(createtimeone!=null&&!"".equals(createtimeone)){
+			bookedQueryVo.setCreatetimeone(Timestamp.valueOf(createtimeone));
+		}
+		
+		if(createtimetwo!=null&&!"".equals(createtimetwo)){
+			bookedQueryVo.setCreatetimeone(Timestamp.valueOf(createtimetwo));
+		}
+		
+		if(way!=null&&!"".equals(way)){
+			bookedQueryVo.setWay(way);
+		}
+		
+		List<Booked> blist = bookedMapper.find(bookedQueryVo);
+		String[] YH = new String[ArrayUtil.YH.length];
+		for(int i=0;i<blist.size();i++){
+			for(int j=0;j<YH.length;j++){
+				if(blist.get(i).getWay().equals(YH[j])){
+					map.put(YH[j], blist.get(i).getDeal());
+				}
+			}
+		}
+		return map;
+	}
+	
+		
+}

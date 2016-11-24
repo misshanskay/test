@@ -1,0 +1,147 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: X201
+  Date: 2016/8/31 0031
+  Time: 9:49
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<html>
+<head>
+    <title>用户列表</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/basestyle.css">
+    <script src="${pageContext.request.contextPath}/js/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/moment.js"></script>
+</head>
+<body>
+<a href="${pageContext.request.contextPath}/user/register.do">添加用户</a>
+<a href="${pageContext.request.contextPath}/user/list1.do">用户树</a>
+<input typt="text" id="search"/><button onclick="search()">搜索</button>
+
+<table id="table1" class="table">
+    <tr>
+        <th >用户名</th>
+        <th >真实姓名</th>
+        <th >就职单位</th>
+        <th >职务</th>
+        <th >编辑</th>
+    </tr>
+
+    <c:forEach var="list" items="${list}">
+        <tr>
+            <td>${list.uname}</td>
+            <td>${list.urealname}</td>
+            <td>${list.uunit}</td>
+            <td>${list.upost}</td>
+            <td>
+                <a href="${pageContext.request.contextPath}/user/updata.do?uid=${list.uid}">修改</a>
+                <button onclick="dele(${list.uid},${thispage})">删除</button>
+            </td>
+        </tr>
+    </c:forEach>
+    <tr>
+        <td></td>
+        <td>
+            <button id="up" onclick="up(${thispage})">上一页</button>
+            <button id="down" onclick="down(${thispage})">下一页</button>
+            共${thispage}/${page1}页
+        </td>
+        <td></td>
+    </tr>
+</table>
+</body>
+<script>
+	function search(){
+		
+		if($("#search").val()!=""){
+			 $.post("${pageContext.request.contextPath}/user/selectuser.do",{
+		            uname:$("#search").val()
+		        },function (data) {
+		        	if(data.status==100){
+		        		alert(data.msg)
+		        	}else if(data.status==200){
+		        		var json = eval(data.userU);
+		        		$("#table1  tr:not(:first)").html("");
+		        		var tr =  '<tr><td>'+json.uname+'</td><td>'+json.urealname+'</td><td>'+json.uunit+'</td><td>'+json.upost+'</td><td><a href="${pageContext.request.contextPath}/user/updata.do?uid='+json.uid+'">修改</a><button onclick="dele('+json.uid+','+data.thispage+')">删除</button></td></tr>';
+		                $("#table1").append(tr);
+		        	}
+		        })
+		}else{
+			alert("请输入用户名！");
+		}
+	}
+
+    function up(thispage) {
+
+        if(thispage!=0){
+            thispage=thispage-1;
+        }
+
+        $.post("${pageContext.request.contextPath}/user/all.do",{
+            thispage:thispage
+        },function (data) {
+            if(data.status==1){
+                alert(data.msg)
+            }
+            var json = eval(data.json); //数组
+
+
+            $("#table1  tr:not(:first)").html("");
+            $.each(json, function (index) {
+                //循环获取数据
+                var name = json[index].uname;
+               
+
+                var tr =  '<tr><td>'+json[index].uname+'</td><td>'+json[index].urealname+'</td><td>'+json[index].uunit+'</td><td>'+json[index].upost+'</td><td><a href="${pageContext.request.contextPath}/user/updata.do?uid='+json[index].uid+'">修改</a><button onclick="dele('+json[index].uid+','+data.thispage+')">删除</button></td></tr>';
+                $("#table1").append(tr);
+            });
+            var td='<tr><td></td><td><button id="up" onclick="up('+data.thispage+')">上一页</button><button id="down" onclick="down('+data.thispage+')">下一页</button>共'+(data.thispage+1)+'/'+data.page+'页</td><td></td></tr>';
+            $("#table1").append(td);
+
+        });
+
+    }
+    function down(thispage) {
+
+        thispage=thispage+1;
+        $.post("${pageContext.request.contextPath}/user/all.do",{
+            thispage:thispage
+        },function (data) {
+            if(data.status==1){
+                alert(data.msg)
+            }
+            var json = eval(data.json); //数组
+
+
+            $("#table1  tr:not(:first)").html("");
+            $.each(json, function (index) {
+                //循环获取数据
+                var name = json[index].uname;
+                var age = json[index].uage;
+                var sex = json[index].usex;
+
+                var tr = '<tr><td>'+json[index].uname+'</td><td>'+json[index].urealname+'</td><td>'+json[index].uunit+'</td><td>'+json[index].upost+'</td><td><a href="${pageContext.request.contextPath}/user/updata.do?uid='+json[index].uid+'">修改</a><button onclick="dele('+json[index].uid+','+data.thispage+')">删除</button></td></tr>';
+                $("#table1").append(tr);
+            });
+            var td='<tr><td></td><td><button id="up" onclick="up('+data.thispage+')">上一页</button><button id="down" onclick="down('+data.thispage+')">下一页</button>共'+(data.thispage+1)+'/'+data.page+'页</td><td></td></tr>';
+            $("#table1").append(td);
+
+        });
+
+    }
+    function dele(uid,thispage) {
+
+        $.post("${pageContext.request.contextPath}/user/dele.do",{
+            uid:uid,
+            thispage:thispage
+        },function (data) {
+
+            down((data-1))
+
+        });
+
+    }
+</script>
+</html>

@@ -1,0 +1,393 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: X201
+  Date: 2016/8/30 0030
+  Time: 17:46
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<html>
+<head>
+    <title>用户修改</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/basestyle.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/zTree_v3-master/css/demo.css" type="text/css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/zTree_v3-master/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    
+    <script src="${pageContext.request.contextPath}/laydate/laydate.js"></script>
+
+    <script src="${pageContext.request.contextPath}/js/jquery-2.2.3.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/moment.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/My97DatePicker/WdatePicker.js"></script>
+    <script src="${pageContext.request.contextPath}/js/jquery-form.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath }/zTree_v3-master/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath }/zTree_v3-master/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath }/zTree_v3-master/js/jquery.ztree.exedit.js"></script>
+    <script type="text/javascript">
+    var setting = {
+            view: {
+                dblClickExpand: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                
+                onClick: onClick
+            }
+        };
+
+        
+
+        
+        
+        function onClick(e, treeId, treeNode) {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+            nodes = zTree.getSelectedNodes(),
+            v = "";
+            nodes.sort(function compare(a,b){return a.id-b.id;});
+            for (var i=0, l=nodes.length; i<l; i++) {
+                v += nodes[i].name + ",";
+            }
+            if (v.length > 0 ) v = v.substring(0, v.length-1);
+            var cityObj = $("#dept");
+            cityObj.attr("value", v);
+        }
+
+        function showMenu() {
+            var cityObj = $("#dept");
+            var cityOffset = $("#dept").offset();
+            $("#menuContent").css({left:cityOffset.left + "px", top:cityOffset.top + cityObj.outerHeight() + "px"}).slideDown("fast");
+
+            $("body").bind("mousedown", onBodyDown);
+        }
+        function hideMenu() {
+            $("#menuContent").fadeOut("fast");
+            $("body").unbind("mousedown", onBodyDown);
+        }
+        function onBodyDown(event) {
+            if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+                hideMenu();
+            }
+        }
+
+        $(document).ready(function(){
+            var json = eval($("#deptlist").val());
+            var zNodes=json;
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            $("#img").hide();
+        });
+        
+        /* function part(){
+            var pname=$("#urole").val();
+            $.post("${pageContext.request.contextPath}/user/seletepart.do",{
+                pname:pname
+            },function(data){
+                var json=data.data
+                $("[name='power']").prop("checked",false);
+                $.each(json,function(index){
+                    
+                    $("input:checkbox[value='"+json[index]+"']").prop('checked',true);
+                })
+                    
+                
+            })
+            
+            
+        } */
+    </script>
+</head>
+<body>
+<form id="form" enctype="multipart/form-data" action="${pageContext.request.contextPath}/user/upu.do">
+    <input type="hidden" name="uid" value="${userU.uid}">
+    <div class="form-group">
+        <label for="name">姓名</label>
+        <input type="text" class="form-control-6" name="uname" id="name" value="${userU.uname}">
+        <label id="namemessage"></label>
+
+    </div>
+    <div class="form-group">
+        <label for="password">密码</label>
+        <input type="password" class="form-control-6" name="upassword" id="password">
+    </div>
+    <div class="form-group">
+        <label for="password1">确认密码</label>
+        <input type="password" class="form-control-6" name="upassword1" id="password1">
+        <label id="passwordmessage"></label>
+    </div>
+
+    </div>
+        <div class="form-group">
+        <label for="downpassword">验证密码</label>
+        <input type="password" class="form-control-6" name="downpassword" id="downpassword" value="${userU.downpassword}">
+    </div>
+
+    <div class="radio">
+        <label>
+
+            <input type="radio" name="userExtend.usex" id="sex1" value="男" <c:if test="${userU.userExtend.usex=='男'}">checked</c:if>>男
+        </label>
+    </div>
+    <div class="radio">
+        <label>
+            <input type="radio" name="userExtend.usex" id="sex2" value="女" <c:if test="${userU.userExtend.usex=='女'}">checked</c:if>>女
+        </label>
+    </div>
+    <div class="form-group">
+        <label for="age">年龄</label>
+        <input type="text" class="form-control-6" name="userExtend.uage" id="age" value="${userU.userExtend.uage}">
+    </div>
+    <div class="form-group">
+        <label for="email">邮箱地址</label>
+        <input type="text" class="form-control-6" name="userExtend.uemail" id="email" value="${userU.userExtend.uemail}">
+    </div>
+    <div class="form-group">
+        <label for="phone">手机号码</label>
+        <input type="text" class="form-control-6" name="userExtend.uphone" id="phone" value="${userU.userExtend.uphone}">
+    </div>
+    
+     <div class="form-group">
+        <label for="dept">  部门：</label>
+        <input type="text" class="form-control-6" name="udept" readonly id="dept" value="${dname}">
+        <a id="menuBtn" href="#" onclick="showMenu(); return false;">选择</a>
+        <input type="hidden" value="${ztreeno }" id="deptlist"/>
+    </div>
+         <div id="menuContent" class="menuContent" style="display:none; position: absolute;">
+    <ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
+</div>
+    
+    <div class="form-group">
+    <label>角色</label>
+
+    <select class="form-control-6" name="part" id="part">
+    
+        <option>--请选择--</option>
+        <c:forEach var="list" items="${list1 }">
+        <option <c:if test="${pname==list.pname}">selected</c:if>>${list.pname }</option>
+        </c:forEach>
+        
+    </select>
+    </div>
+     <label>头像</label>
+   <div id="img1">
+       
+   
+        <img id="imgs" alt="" src="${pageContext.request.contextPath }/${userU.userExtend.imgsrc}" width="80" height="100">
+        
+    </div>
+   <button type="button" onclick="upload()">修改头像</button>
+    <div class="form-group">
+        <label for="real">真实姓名</label>
+        <input type="text" class="form-control-6" name="userExtend.urealname" id="real" value="${userU.userExtend.urealname}">
+    </div>
+    <div class="form-group">
+        <label for="real">出生年月</label>
+        <input type="text" name="birthday" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'});"
+        value="${birthday}"/>
+
+	
+    
+    </div>
+    <div class="form-group">
+        <label>岗位</label>
+        <select class="form-control-6" name="userExtend.upost">
+            <option <c:if test="${userU.userExtend.upost=='市长'}">selected</c:if>>市长</option>
+            <option <c:if test="${userU.userExtend.upost=='副市长'}">selected</c:if>>副市长</option>
+            <option <c:if test="${userU.userExtend.upost=='党委书记'}">selected</c:if>>党委书记</option>
+            <option <c:if test="${userU.userExtend.upost=='局长'}">selected</c:if>>局长</option>
+            <option <c:if test="${userU.userExtend.upost=='处长'}">selected</c:if>>处长</option>
+            <option <c:if test="${userU.userExtend.upost=='科长'}">selected</c:if>>科长</option>
+            <option <c:if test="${userU.userExtend.upost=='科员'}">selected</c:if>>科员</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="unit">就职单位</label>
+        <input type="text" class="form-control-6" name="userExtend.uunit" id="unit" value="${userU.userExtend.uunit}">
+    </div>
+    <div class="form-group">
+        <label for="card">身份证</label>
+        <input type="text" class="form-control-6" name="userExtend.ucard" id="card" value="${userU.userExtend.ucard}">
+    </div>
+    <div class="form-group">
+        <label>政治面貌</label>
+        <select class="form-control-6" name="userExtend.upolitical">
+            <option <c:if test="${userU.userExtend.upolitical=='共青团员'}">selected</c:if>>共青团员</option>
+            <option <c:if test="${userU.userExtend.upolitical=='党员'}">selected</c:if>>党员</option>
+            <option <c:if test="${userU.userExtend.upolitical=='群众'}">selected</c:if>>群众</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>地址</label>
+        <select name="address1" onchange="province(this)" id="pro">
+            <option selected="" value="0">请选择省</option>
+                            <c:forEach var="list" items="${map}">
+                            <option value="${list.name }" <c:if test="${list.name==address1 }">selected</c:if>>${list.name }</option>
+                            </c:forEach>
+            
+        </select>
+        <select name="address2" onchange="city(this)" id="city1">
+            <option selected="" value="0">请选择市</option>
+            <c:forEach var="list" items="${city}">
+                            <option value="${list.name }" <c:if test="${list.name==address2 }">selected</c:if>>${list.name }</option>
+                            </c:forEach>
+        </select>
+        <select name="address3" id="area1">
+            <option selected="" value="0">请选择区</option>
+            <c:forEach var="list" items="${area}">
+                            <option value="${list.name }" <c:if test="${list.name==address3 }">selected</c:if>>${list.name }</option>
+                            </c:forEach>
+        </select>
+        <input type="text" class="form-control-6" name="address4" value="${address4 }">
+    </div>
+    
+    <div class="form-group">
+        <label for="graduation">毕业院校</label>
+        <input type="text" class="form-control-6" name="userExtend.ugraduation" id="graduation" value="${userU.userExtend.ugraduation}">
+    </div>
+    <div class="form-group">
+        <label for="major">专业</label>
+        <input type="text" class="form-control-6" name="userExtend.umajor" id="major" value="${userU.userExtend.umajor}">
+    </div>
+    <div class="form-group">
+        <label for="introduction">个人描述</label>
+        <textarea rows="3" name="userExtend.uintroduction" class="form-control-6" id="introduction">${userU.userExtend.uintroduction}</textarea>
+    </div>
+	<input type="submit" value="修改"/>
+
+</form>
+<form action="${pageContext.request.contextPath}/user/fileupload.do" id="form1" method="post" enctype="multipart/form-data">
+<input type="hidden" name="id" value="${userU.uid }"/>
+<input type="file" name="img" id="img" onchange="upload1()"/>
+</form>
+<!-- <button class="btn btn-default" onclick="upu()">修改</button> -->
+</body>
+<script>
+    /* function upu() {
+        var form1=$("#form").serialize()
+        $.post("${pageContext.request.contextPath}/user/upu.do",
+            form1
+
+
+
+        ,function (data) {
+            window.location.href="${pageContext.request.contextPath}/user/list.do";
+        })
+
+    } */
+   
+    
+    function upload() {
+    	
+		$("#img").click();
+	}
+    function upload1(){
+    	$("#form1").ajaxSubmit({
+            type : 'post',
+            url:'/WisdomEnterprise-establishing/user/fileupload.do',
+             dataType:'json',
+             success:function(data){
+                 if(data.status==200){
+                 var name=data.data
+                 $("#imgs").remove();
+                 var name1="/localhost:8080/WisdomEnterprise-establishing/"+name;
+                 var value = "<img  id='imgs' src='/"+name1+"' height='100' width='80' />";
+                   $("#img1").empty().append(value);
+                
+              
+                   alert("修改成功！")
+                 }else{
+                     alert(data.msg)
+                 }
+              
+             }
+            })
+    }
+   
+    	
+    
+    
+    $("#name").change(function(){
+        $.post("${pageContext.request.contextPath}/user/aj.do",
+                {
+                    uname:$(this).val()
+
+                },
+                function(data){
+                    if(data=="success"){
+                        $("#namemessage").html("");
+                    }else{
+                        $("#namemessage").html("用户已存在！");
+                    }
+
+                });
+    });
+    $("#password1").change(function(){
+        if($("#password").val()==$("#password1").val()){
+            $("#passwordmessage").html("");
+        }else{
+
+            $("#passwordmessage").html("两次密码不一致！");
+        }
+
+    })
+    $("#password").change(function(){
+        if($("#password").val()==$("#password1").val()){
+            $("#passwordmessage").html("");
+        }else{
+
+            $("#passwordmessage").html("两次密码不一致！");
+        }
+
+    })
+    
+     function province(obj){
+        if(obj.value!=0){
+            $.post("${pageContext.request.contextPath}/enterprise/city.do",{
+                name:obj.value
+                
+            },function (data) {
+                $("#city1").empty();
+                $("#area1").empty();
+                $("#city1").append("<option value='0'>--请选择--</option>");
+                $("#area1").append("<option value='0'>--请选择--</option>");
+                for(var i=0;i<data.data.length;i++){
+                $("#city1").append('<option value='+data.data[i].name+'>'+data.data[i].name+'</option>');
+                    
+                }
+
+            }); 
+        }else{
+            
+            $("#city1").empty();
+            $("#area1").empty();
+        }
+    }
+    
+    function city(obj){
+        if(obj.value!=0){
+            $.post("${pageContext.request.contextPath}/enterprise/area.do",{
+                name:obj.value
+                
+            },function (data) {
+               
+                $("#area1").empty();
+               
+                $("#area1").append("<option value='0'>--请选择--</option>");
+                for(var i=0;i<data.data.length;i++){
+                    
+                $("#area1").append('<option value='+data.data[i].name+'>'+data.data[i].name+'</option>');
+                    
+                }
+
+            }); 
+        }else{
+            $("#area1").empty();
+        }
+         
+    }
+</script>
+</html>

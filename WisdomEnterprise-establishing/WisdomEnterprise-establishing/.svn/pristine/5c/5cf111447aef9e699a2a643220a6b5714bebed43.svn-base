@@ -1,0 +1,54 @@
+package cn.sirbox.service.impl;
+
+import cn.sirbox.model.UserU;
+import cn.sirbox.model.UserUExample;
+import org.springframework.stereotype.Service;
+import cn.sirbox.dao.UserUMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+/**
+ * Created by X201 on 2016/8/26 0026.
+ */
+@Service
+public class UserUService {
+
+    @Autowired
+    private UserUMapper userUMapper;
+
+
+    public UserU getUserUById(Integer uid){
+
+       return userUMapper.getUserUById(uid);
+      //  return new UserU();
+    }
+
+    public UserU getUserUByName(String uname) {
+        return userUMapper.getUserUByName(uname);
+    }
+    public void insertSelective(UserU userU){
+        userUMapper.insertSelective(userU);
+    }
+    public UserU getUserU(UserU userU) {
+        return userUMapper.getUserU(userU);
+    }
+
+    public List<UserU> selectAllUserU(Integer thispage) {
+        int page=thispage*5;
+        List<UserU> u=userUMapper.selectAllUserU(page);
+        return u;
+    }
+
+    public Integer countByExample() {
+        return userUMapper.countByExample(new UserUExample());
+    }
+
+    public void deleteUserUById(Integer uid) {
+        userUMapper.deleteUserUById(uid);
+    }
+
+    public void updateByPrimaryKeySelective(UserU userU) {
+        userUMapper.updateByPrimaryKeySelective(userU);
+    }
+}

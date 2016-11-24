@@ -1,0 +1,83 @@
+package cn.sirbox.model;
+
+import java.sql.Timestamp;
+
+
+public class BookedQueryVo {
+	
+	private float dealOne;
+	private float dealTwo;
+	private Double deal;
+	private String username;
+	private String productType;
+	private Timestamp createtimeone;
+	private Timestamp createtimetwo;
+	private String way;
+	private String typeOne;
+	private String typeTwo;
+	
+	
+	public Timestamp getCreatetimeone() {
+		return createtimeone;
+	}
+	public void setCreatetimeone(Timestamp createtimeone) {
+		this.createtimeone = createtimeone;
+	}
+	public Timestamp getCreatetimetwo() {
+		return createtimetwo;
+	}
+	public void setCreatetimetwo(Timestamp createtimetwo) {
+		this.createtimetwo = createtimetwo;
+	}
+	public String getWay() {
+		return way;
+	}
+	public void setWay(String way) {
+		this.way = way;
+	}
+	public String getTypeOne() {
+		return typeOne;
+	}
+	public void setTypeOne(String typeOne) {
+		this.typeOne = typeOne;
+	}
+	public String getTypeTwo() {
+		return typeTwo;
+	}
+	public void setTypeTwo(String typeTwo) {
+		this.typeTwo = typeTwo;
+	}
+
+	public float getDealOne() {
+		return dealOne;
+	}
+	public void setDealOne(float dealOne) {
+		this.dealOne = dealOne;
+	}
+	public float getDealTwo() {
+		return dealTwo;
+	}
+	public void setDealTwo(float dealTwo) {
+		this.dealTwo = dealTwo;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getProductType() {
+		return productType;
+	}
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	public Double getDeal() {
+		return deal;
+	}
+	public void setDeal(Double deal) {
+		this.deal = deal;
+	}
+	
+}

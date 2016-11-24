@@ -1,0 +1,34 @@
+package cn.sirbox.dao;
+
+import cn.sirbox.model.Booked;
+import cn.sirbox.model.BookedExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+public interface BookedMapper {
+    int countByExample(BookedExample example);
+
+    int deleteByExample(BookedExample example);
+
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(Booked record);
+
+    int insertSelective(Booked record);
+
+    List<Booked> selectByExample(BookedExample example);
+    
+    List<Booked> selectByExamples();
+    
+    Booked selectByPrimaryKey(Integer id);
+    
+    Booked selectByBooked(Booked booked);
+
+    int updateByExampleSelective(@Param("record") Booked record, @Param("example") BookedExample example);
+
+    int updateByExample(@Param("record") Booked record, @Param("example") BookedExample example);
+
+    int updateByPrimaryKeySelective(Booked record);
+
+    int updateByPrimaryKey(Booked record);
+}

@@ -1,0 +1,88 @@
+package cn.sirbox.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.sirbox.model.Result;
+import cn.sirbox.service.impl.EnterpriseService;
+import net.sf.json.JSONArray;
+
+@Controller
+@RequestMapping("statistics")
+public class StatisticsController {
+    @Autowired
+    private EnterpriseService enterpriseService;
+    
+    
+    @RequestMapping("user")
+    public String user(Model model){
+        Integer year=2016;
+        
+        Date date = new Date();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(date);
+        Integer month=0;
+        if(gc.get(gc.YEAR)==year){
+            month=gc.get(gc.MONTH)+1;
+        }else{
+            month=12;
+        }
+        
+        List<String> list=new ArrayList<>();
+        list.add(year+"年");
+        for(int i=0;i<month;i++){
+            list.add((i+1)+"月");
+        }
+        model.addAttribute("list", list);
+        List<String> list1=new ArrayList<>();
+        list1=enterpriseService.getCountInsert1(year,month);
+        model.addAttribute("list1", list1);
+        
+        
+        List<String> list2=new ArrayList<>();
+        list1=enterpriseService.getCountInsert2(year,month);
+        model.addAttribute("list2", list2);
+        
+        List<String> list3=new ArrayList<>();
+        list1=enterpriseService.getCountInsert3(year,month);
+        model.addAttribute("list3", list3);
+        List<String> list4=new ArrayList<>();
+        list1=enterpriseService.getCountInsert4(year,month);
+        model.addAttribute("list4", list4);
+        
+        List<String> list5=new ArrayList<>();
+        list1=enterpriseService.getCountInsert5(year,month);
+        model.addAttribute("list5", list5);
+        
+        List<String> list6=new ArrayList<>();
+        list1=enterpriseService.getCountInsert6(year,month);
+        model.addAttribute("list6", list6);
+          
+        
+       
+        String m="[{name: '用户1',data: [22, 22, 95, 245, 282, 225, 252, 265, 222, 282, 229, 96]}]";
+       model.addAttribute("m", m);
+        return "statisticsuser2";
+    }
+    
+    
+    @RequestMapping("data")
+    @ResponseBody
+    public Result data(){
+        Result result=new Result();
+        
+        
+       
+        
+      // result.setData(list);
+        return result;
+    }
+}

@@ -1,0 +1,48 @@
+package cn.sirbox.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.sirbox.dao.PartMapper;
+import cn.sirbox.model.Part;
+import cn.sirbox.model.PartExample;
+
+@Service
+public class PartService {
+	@Autowired
+	private PartMapper partMapper;
+
+	public List<Part> getAllPart() {
+		// TODO Auto-generated method stub
+		return partMapper.getAllPart();
+	}
+	public Part getPartByName(String pname){
+		return partMapper.getPartByName(pname);
+	}
+	public Part getPartById(Integer pid){
+		return partMapper.getPartById(pid);
+	}
+	public void addPart(Part part) {
+		// TODO Auto-generated method stub
+		partMapper.addPart(part);
+	}
+	public void addPartRole(String pname, String rname) {
+		// TODO Auto-generated method stub
+		partMapper.addPartRole(pname,rname);
+	}
+	public List<String> getRole(String pname) {
+		// TODO Auto-generated method stub
+		return partMapper.getRole(pname);
+	}
+	
+	public void deleteRole(String pname) {
+		// TODO Auto-generated method stub
+		partMapper.deleteRole(pname);
+	}
+	public void updataPart(Part part) {
+		// TODO Auto-generated method stub
+		partMapper.updataPart(part);
+	}
+}

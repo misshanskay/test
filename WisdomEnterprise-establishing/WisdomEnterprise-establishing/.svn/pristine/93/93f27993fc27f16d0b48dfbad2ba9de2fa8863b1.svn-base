@@ -1,0 +1,37 @@
+package cn.sirbox.controller;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+
+
+@Controller
+@RequestMapping("/index")
+public class IndexController {
+	
+	private static Logger logger = LogManager.getLogger(IndexController.class.getName());
+	@Autowired  
+	private HttpSession session;
+	@Autowired  
+	private HttpServletRequest request; 
+
+	@RequestMapping("/login")
+	public String login(Model model) {
+		String ztreeno="[{"+"id:1,pId:0,name:'h1',open:true},{id:11,pId:1,name:'h11'},{id:12,pId:1,name:'h12'}"+"";
+		model.addAttribute("ztreeno", ztreeno);
+		return "ztree";
+	}
+	@RequestMapping("/main")
+	public String main() {
+		return "register";
+	}
+	
+
+}

@@ -1,0 +1,45 @@
+package cn.sirbox.dao;
+
+import cn.sirbox.model.UserU;
+import java.util.List;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.stereotype.Repository;
+@Repository
+public interface UserUMapper {
+   
+    int updateByPrimaryKey(UserU record);
+    UserU getUserU(UserU userU);
+
+    UserU getUserUByName(@Param("uname")String uname);
+
+    UserU getUserUById(@Param("uid")Integer uid);
+
+
+    List<UserU> selectAllUserU(Integer page);
+
+    void deleteUserUById(Integer uid);
+
+    void addUserUPower(@Param("uname")String uname,@Param("power")String power);
+
+    List<String> getUserUPower(String uname);
+
+    void deleteUserUPower(String uname);
+
+	List<UserU> getAllUserUDept();
+
+	void updateDeptById(@Param("uid")Integer uid,@Param("did")Integer did);
+    Integer countByUserU();
+    void insertUserU(@Param("userU")UserU userU);
+    void insertUserUExtend(@Param("userU")UserU userU);
+    void insertUserUDept(@Param("userU")UserU userU);
+    String getUserUPart(@Param("uid")Integer uid);
+    void updateUserUImg(@Param("userU")UserU userU);
+    void updateUserU(@Param("userU")UserU userU);
+    void updateUserUExtend(@Param("userU")UserU userU);
+    void updateUserUDept(@Param("userU")UserU userU);
+}

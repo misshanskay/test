@@ -1,0 +1,88 @@
+package cn.sirbox.service.impl;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+
+import cn.sirbox.dao.AccountMapper;
+import cn.sirbox.dao.BookedMapper;
+import cn.sirbox.model.Account;
+import cn.sirbox.model.Booked;
+import cn.sirbox.model.page;
+import cn.sirbox.service.BookedService;
+import cn.sirbox.utils.ExcelUtils;
+@Service
+public class BookedServiceImpl implements BookedService{
+	
+	@Autowired
+	private BookedMapper bookedMapper;
+	
+	@Autowired
+	private AccountMapper AccountMapper;
+	
+	@Override
+	public List<Booked> findAll(String thispage) {
+		
+		page page = new page();
+		page.setThispage(Integer.parseInt(thispage));
+		PageHelper.startPage(page.getStartPos(), page.getPagenumber());
+		return bookedMapper.selectByExamples();
+	}
+
+	@Override
+	public void exportFile(HttpServletResponse response) {
+		
+		List<Booked> objs = bookedMapper.selectByExamples();
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		OutputStream os = null;
+		try {
+			String fileName = "入款列表" + df.format(new Date()) + ".xlsx";// 文件名称
+			os = response.getOutputStream();// 得到输出流outputStream是用来向客户端输入任何数据的
+			response.reset();// 清除首部的空白行
+			response.setHeader("Content-disposition", "attachment; filename = " + URLEncoder.encode(fileName, "UTF-8"));
+			response.setContentType("application/octet-streem");
+			os = response.getOutputStream();
+			ExcelUtils.getInstance().export2Excel(os, objs, Booked.class, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public boolean add(Booked booked) {
+		
+		boolean flag = false;
+		Booked  booked2 = bookedMapper.selectByBooked(booked);
+		if(booked2==null){
+			return flag;
+		}else{
+			Account account = AccountMapper.selectByPrimaryKey(booked.getUsername());
+			if(account!=null){
+				BigDecimal deal = new BigDecimal(booked.getDeal().toString());
+				BigDecimal balance = new BigDecimal(account.getBalance().toString());
+				BigDecimal count = deal.add(balance);
+				account.setBalance(count);
+				AccountMapper.updateByPrimaryKey(account);
+				flag = true;
+				return flag;
+			}else{
+				return flag;
+			}
+		}
+		
+	}
+
+}

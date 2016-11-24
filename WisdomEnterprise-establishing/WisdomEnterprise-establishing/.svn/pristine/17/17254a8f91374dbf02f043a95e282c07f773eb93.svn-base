@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sirbox.dao.UserUMapper">
+   <resultMap id="BaseResultMap" type="cn.sirbox.model.UserU" >
+    
+    <id column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="upassword" property="upassword" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="enabled" property="enabled" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="usex" property="usex" jdbcType="VARCHAR" />
+    <result column="uage" property="uage" jdbcType="INTEGER" />
+    <result column="uemail" property="uemail" jdbcType="VARCHAR" />
+    <result column="imgsrc" property="imgsrc" jdbcType="VARCHAR" />
+    <result column="uphone" property="uphone" jdbcType="VARCHAR" />
+    <result column="ubirthday" property="ubirthday" jdbcType="VARCHAR" />
+    <result column="upost" property="upost" jdbcType="VARCHAR" />
+    <result column="uunit" property="uunit" jdbcType="VARCHAR" />
+    <result column="ucard" property="ucard" jdbcType="VARCHAR" />
+    <result column="upolitical" property="upolitical" jdbcType="VARCHAR" />
+    <result column="ugraduation" property="ugraduation" jdbcType="VARCHAR" />
+    <result column="umajor" property="umajor" jdbcType="VARCHAR" />
+    <result column="uintroduction" property="uintroduction" jdbcType="VARCHAR" />
+    <result column="urealname" property="urealname" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getUserUById" parameterType="Integer" resultType="cn.sirbox.model.UserU">
+   select u.uid,u.uname,u.upassword,u.status,u.enabled,u.createtime,u.updatetime,e.usex,
+   e.uage,e.uemail,e.imgsrc,e.uphone,e.ubirthday,e.upost,e.uunit,e.ucard,e.upolitical,
+   e.ugraduation,e.umajor,e.uintroduction,e.urealname 
+   from user_u u left join user_extend e on u.uid=e.uid
+   where u.uid=#{uid} and u.enabled=1
+  </select>
+
+  <select id="getUserUByName" parameterType="String" resultType="cn.sirbox.model.UserU">
+  select u.uid,u.uname,u.upassword,u.status,u.enabled,u.createtime,u.updatetime,e.usex,e.uage,e.uemail,e.imgsrc,e.uphone,e.ubirthday,e.upost,e.uunit,e.ucard,e.upolitical,e.ugraduation,e.umajor,e.uintroduction,e.urealname 
+   from user_u u left join user_extend e on u.uid=e.uid
+   where u.uname=#{uname} and u.enabled=1
+  </select>
+  <select id="getUserU" parameterType="cn.sirbox.model.UserU" resultType="cn.sirbox.model.UserU">
+    select u.uid,u.uname,u.upassword,u.status,u.enabled,u.createtime,u.updatetime,e.usex,e.uage,e.uemail,e.imgsrc,e.uphone,e.ubirthday,e.upost,e.uunit,e.ucard,e.upolitical,e.ugraduation,e.umajor,e.uintroduction,e.urealname 
+   from user_u u left join user_extend e on u.uid=e.uid
+   where u.uname=#{uname} and u.upassword=#{upassword} and u.enabled=1
+  </select>
+
+  <select id="selectAllUserU" parameterType="Integer" resultType="cn.sirbox.model.UserU">
+   
+    select u.uid,u.uname,u.upassword,u.status,u.enabled,u.createtime,u.updatetime,e.usex,e.uage,e.uemail,e.imgsrc,e.uphone,e.ubirthday,e.upost,e.uunit,e.ucard,e.upolitical,e.ugraduation,e.umajor,e.uintroduction,e.urealname 
+    from user_u u left join user_extend e on u.uid=e.uid 
+    where u.status='government' and u.enabled=1
+    limit #{page},5
+  </select>
+  <select id="getAllUserUDept" resultType="cn.sirbox.model.UserU">
+    select u.uid,u.uname,d.did,u.upassword,u.status,u.enabled,u.createtime,u.updatetime,e.usex,e.uage,e.uemail,e.imgsrc,e.uphone,e.ubirthday,e.upost,e.uunit,e.ucard,e.upolitical,e.ugraduation,e.umajor,e.uintroduction,e.urealname
+    from user_u u left join user_dept d on u.uid=d.uid left join user_extend e on u.uid=e.uid 
+    where u.status='government' and u.enabled=1
+  </select>
+    <select id="countByUserU" resultType="Integer">
+    select count(uid) from user_u where enabled=1 and status='government';
+    </select>
+  <delete id="deleteUserUById" parameterType="Integer">
+    DELETE FROM user_u WHERE uid=#{uid}
+  </delete>
+
+ <select id="getUserUPart" resultType="String" parameterType="Integer">
+    select p.pname
+    from user_u u left join user_part up on u.uid=up.uid left join part p on up.pid=p.pid
+    where u.status='government' and u.enabled=1 and u.uid=#{uid}
+  </select>
+ 
+  <insert id="insertUserU" parameterType="cn.sirbox.model.UserU">
+    INSERT  INTO user_u VALUES (null,#{userU.uname},#{userU.upassword},#{userU.status},#{userU.enabled},#{userU.createtime},#{userU.updatetime})
+  </insert>
+  <insert id="insertUserUExtend" parameterType="cn.sirbox.model.UserU">
+    INSERT  INTO user_extend VALUES (null,#{userU.uid},#{userU.usex},#{userU.uage},#{userU.uemail},#{userU.imgsrc},#{userU.uphone},#{userU.ubirthday},#{userU.upost},#{userU.uunit},#{userU.ucard},#{userU.upolitical},#{userU.ugraduation},#{userU.umajor},#{userU.uintroduction},#{userU.urealname})
+  </insert>
+  <insert id="insertUserUDept" parameterType="cn.sirbox.model.UserU">
+    INSERT  INTO user_dept VALUES (#{userU.uid},#{userU.did})
+  </insert>
+ <update id="updateUserUImg" parameterType="cn.sirbox.model.UserU">
+ update user_extend set imgsrc=#{userU.imgsrc} where uid=#{userU.uid}
+ </update>
+ 
+ <update id="updateUserU" parameterType="cn.sirbox.model.UserU">
+ update user_u 
+ <set >
+      <if test="userU.uname != null" >
+        uname = #{userU.uname},
+      </if>
+      <if test="userU.upassword != null" >
+        upassword = #{userU.upassword},
+      </if>
+      <if test="userU.status != null" >
+        status = #{userU.status},
+      </if>
+      <if test="userU.enabled != null" >
+        enabled = #{userU.enabled},
+      </if>
+      <if test="userU.updatetime != null" >
+        updatetime = #{userU.updatetime}
+      </if>
+     
+    </set> where uid=#{userU.uid}
+ </update>
+ 
+ <update id="updateUserUExtend" parameterType="cn.sirbox.model.UserU">
+ update user_extend 
+ <set >
+      <if test="userU.usex != null" >
+        usex = #{userU.usex},
+      </if>
+      <if test="userU.uage != null" >
+        uage = #{userU.uage},
+      </if>
+      <if test="userU.uemail != null" >
+        uemail = #{userU.uemail},
+      </if>
+      <if test="userU.uphone != null" >
+        uphone = #{userU.uphone},
+      </if>
+      <if test="userU.ubirthday != null" >
+        ubirthday = #{userU.ubirthday},
+      </if>
+      <if test="userU.upost != null" >
+        upost = #{userU.upost},
+      </if>
+      <if test="userU.uunit != null" >
+        uunit = #{userU.uunit},
+      </if>
+      <if test="userU.ucard != null" >
+        ucard = #{userU.ucard},
+      </if>
+      <if test="userU.upolitical != null" >
+        upolitical = #{userU.upolitical},
+      </if>
+      <if test="userU.ugraduation != null" >
+        ugraduation = #{userU.ugraduation},
+      </if>
+      <if test="userU.umajor != null" >
+        umajor = #{userU.umajor},
+      </if>
+      <if test="userU.uintroduction != null" >
+        uintroduction = #{userU.uintroduction},
+      </if>
+      <if test="userU.urealname != null" >
+        urealname = #{userU.urealname}
+      </if>
+     
+    </set> where uid=#{userU.uid}
+ </update>
+ <update id="updateUserUDept" parameterType="cn.sirbox.model.UserU">
+ update user_dept 
+ <set >
+      <if test="userU.did != null" >
+        did = #{userU.did}
+      </if>
+      
+     
+    </set> where uid=#{userU.uid}
+ </update>
+  
+  
+</mapper>

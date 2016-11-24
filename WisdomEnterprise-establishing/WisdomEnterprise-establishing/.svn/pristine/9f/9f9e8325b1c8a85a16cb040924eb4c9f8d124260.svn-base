@@ -1,0 +1,116 @@
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/zTree_v3-master/css/demo.css" type="text/css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/zTree_v3-master/css/metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="${pageContext.request.contextPath }/js/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath }/zTree_v3-master/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath }/zTree_v3-master/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath }/zTree_v3-master/js/jquery.ztree.exedit.js"></script>
+<script type="text/javascript">
+var setting = {
+        view: {
+            addHoverDom: addHoverDom,
+            removeHoverDom: removeHoverDom,
+            selectedMulti: false
+        },
+        /* check: {
+            enable: true
+             ,chkStyle: 'checkbox'
+            ,radioType: "level" 
+        }, */
+        callback:{
+        	beforeRemove:beforeRemove,
+        onDrop: zTreeOnDrop
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: true
+        }
+    };
+function zTreeOnDrop(event, treeId, treeNodes, targetNode, moveType) {
+	if(treeNodes[0].id<0){
+		$.post("${pageContext.request.contextPath}/index/aj.do",{
+			uid:treeNodes[0].id,
+			did:targetNode.id
+		},function(data){
+			alert(data)
+		})
+	}else{
+		$.post("${pageContext.request.contextPath}/index/dept.do",{
+			did:treeNodes[0].id,
+			pid:targetNode.id
+		},function(data){
+			alert(data)
+		})
+	}
+};
+	function beforeRemove(treeId, treeNode){
+		
+		return false;
+	};
+    
+	
+    $(document).ready(function(){
+    	/* $.post("${pageContext.request.contextPath}/index/aj.do",function(data){
+    		alert("123")
+    		alert(data)
+    		var json = eval(data);
+    		zNodes=json;
+    		alert("123")
+    		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    	}) */
+    	
+    	var json = eval($("#ztee").val());
+    	zNodes=json;
+    	$.fn.zTree.init($("#treeDemo"), setting, zNodes)
+		
+    });
+
+    var newCount = 1;
+    function addHoverDom(treeId, treeNode) {
+    	if(treeNode.id>0){
+    		var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='add node' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+            var btn = $("#addBtn_"+treeNode.tId);
+            if (btn) btn.bind("click", function(){
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:"new node" + (newCount++)});
+                return false;
+            });
+    	}
+        
+    };
+    function removeHoverDom(treeId, treeNode) {
+        $("#addBtn_"+treeNode.tId).unbind().remove();
+    };
+    
+</script>
+
+</head>
+
+<body>
+<input type="hidden" value="${ztreeno }" id="ztee"/>
+
+
+<div>
+        <ul id="treeDemo" class="ztree"></ul>
+    </div>
+ 
+</body>
+<script type="text/javascript">
+	
+	
+</script>
+</html>

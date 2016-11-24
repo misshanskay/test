@@ -1,0 +1,27 @@
+package cn.sirbox.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.sirbox.dao.DeptMapper;
+import cn.sirbox.model.Dept;
+
+@Service
+public class DeptService {
+@Autowired
+private DeptMapper deptMapper;
+
+public List<Dept> getAllDept() {
+	// TODO Auto-generated method stub
+	return deptMapper.getAllDept();
+}
+
+public void updateDeptById(Integer did, Integer pid) {
+	// TODO Auto-generated method stub
+	deptMapper.updateDeptById(did,pid);
+}
+
+
+}

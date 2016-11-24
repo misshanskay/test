@@ -1,0 +1,68 @@
+package cn.sirbox.utils;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class utils {
+      public static String datetostring(Date date){
+          SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          String s1 = sdf.format(date);
+          return s1;
+      }
+      
+      public static Date stringtodate(String s) throws ParseException{
+          Date d=new SimpleDateFormat("yyyy-MM-dd").parse(s);
+          return d;
+      }
+      
+      
+      public static String getMd5(String inStr)  
+      {  
+          String outStr=null;  
+          if(inStr ==null)  
+          {  
+              outStr = null;  
+          }  
+          else if("".equals(inStr))  
+          {  
+              outStr = "";  
+          }  
+          else  
+          {  
+              try  
+              {  
+                  MessageDigest md = MessageDigest.getInstance("MD5");  
+                  md.update(inStr.getBytes());  
+                  byte b[] = md.digest();  
+                  StringBuffer buf = new StringBuffer();  
+                  for(int i=1;i<b.length;i++)  
+                  {  
+                      int c = b[i]>>>4 & 0xf;  
+                      buf.append(Integer.toHexString(c));  
+                      c = b[i]& 0xf;  
+                      buf.append(Integer.toHexString(c));  
+                  }  
+                  outStr = buf.toString();  
+              }  
+              catch (NoSuchAlgorithmException e)  
+              {  
+                  // TODO Auto-generated catch block  
+                  e.printStackTrace();  
+              }  
+          }  
+          return outStr;  
+      }  
+      public static void main(String[] args) {
+          Date date = new Date();
+          GregorianCalendar gc = new GregorianCalendar();
+          gc.setTime(date);
+          System.out.println(gc.get(gc.MONTH));
+          System.out.println(gc.get(gc.YEAR));
+          System.out.println(gc.get(gc.DAY_OF_MONTH));
+    }
+      
+}

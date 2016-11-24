@@ -1,0 +1,131 @@
+package cn.sirbox.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import cn.sirbox.model.Dept;
+import cn.sirbox.model.DeptEnterpriseExample;
+import cn.sirbox.model.DeptEnterpriseKey;
+import cn.sirbox.model.DeptExample;
+import cn.sirbox.model.Enterprise;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.sirbox.dao.DeptEnterpriseMapper;
+import cn.sirbox.dao.DeptMapper;
+import cn.sirbox.dao.EnterpriseMapper;
+import cn.sirbox.dao.UserDeptMapper;
+import cn.sirbox.dao.UserEnterpriseMapper;
+import cn.sirbox.dao.UserUMapper;
+import cn.sirbox.model.EnterpriseExample;
+import cn.sirbox.model.UserDeptKey;
+import cn.sirbox.model.UserEnterpriseKey;
+import cn.sirbox.model.UserU;
+import cn.sirbox.model.UserUExample;
+import cn.sirbox.utils.config;
+
+@Service
+public class EnterpriseService {
+
+	@Autowired
+	private EnterpriseMapper enterpriseMapper;
+	
+	@Autowired
+    private UserUMapper userUMapper;
+	
+	@Autowired
+    private UserEnterpriseMapper userEnterpriseMapper;
+	
+	@Autowired
+    private DeptEnterpriseMapper deptEnterpriseMapper;
+	
+	@Autowired
+    private DeptMapper deptMapper;
+	
+	@Autowired
+    private UserDeptMapper userDeptMapper;
+	
+	public Integer countByExample() {
+		// TODO Auto-generated method stub
+		return enterpriseMapper.countByExample(new EnterpriseExample());
+	}
+
+	public List<Enterprise> selectAllEnterprise(Integer thispage,Integer pagenumber) {
+		// TODO Auto-generated method stub
+	    thispage=thispage*pagenumber;
+		return enterpriseMapper.selectAllEnterprise(thispage,pagenumber);
+	   
+	}
+
+    public void insertSelective(UserU userU, Enterprise enterprise) {
+        // TODO Auto-generated method stub
+        //添加用户和企业
+        userU.setEnabled(1);
+        userU.setStatus("enterprise");
+        userU.setCreatetime(new Date());
+        userU.setUpdatetime(new Date());
+        userUMapper.insertSelective(userU);
+        enterprise.setEnabled(1);
+        enterpriseMapper.insertSelective(enterprise);
+        //查询刚创建的用户和企业id
+        UserUExample uue=new UserUExample();
+        uue.createCriteria().andUnameEqualTo(userU.getUname());
+        UserU uu=userUMapper.selectByExample(uue).get(0);
+        EnterpriseExample ee=new EnterpriseExample();
+        ee.createCriteria().andEnameEqualTo(enterprise.getEname());
+        Enterprise ep=enterpriseMapper.selectByExample(ee).get(0);
+        //为用户和企业关联表添加数据
+        UserEnterpriseKey uep=new UserEnterpriseKey();
+        uep.setEid(ep.getEid());
+        uep.setUid(uu.getUid());
+        userEnterpriseMapper.insertSelective(uep);
+        //为一个新企业添加基础部门
+        Dept dept=new Dept();
+        String name=String.valueOf(System.currentTimeMillis());
+        dept.setDname(name);dept.setPid(0);dept.setStatus("enterprise");dept.setCreatetime(new Date());dept.setUpdatetime(new Date());
+        deptMapper.insert(dept);
+        DeptExample de=new DeptExample();
+        de.createCriteria().andDnameEqualTo(name);
+        Dept dd=deptMapper.selectByExample(de).get(0);
+        
+        dd.setDname("行政部");
+        deptMapper.updateByPrimaryKeySelective(dd);
+        //添加基础部门和企业的关联
+        DeptEnterpriseKey dp=new DeptEnterpriseKey();
+        dp.setEid(ep.getEid());
+        
+        
+       
+        dp.setDid(dd.getDid());
+        deptEnterpriseMapper.insert(dp);
+        
+        
+        //添加用户和部门的关联
+        UserDeptKey udk=new UserDeptKey();
+        udk.setDid(dd.getDid());
+        udk.setUid(uu.getUid());
+        userDeptMapper.insert(udk);
+    }
+
+	/*public void insertSelective(Enterprise enterprise) {
+		// TODO Auto-generated method stub
+		enterpriseMapper.insertSelective(enterprise);
+	}
+
+	public Enterprise selectByPrimaryKey(Integer eid) {
+		// TODO Auto-generated method stub
+		return enterpriseMapper.selectByPrimaryKey(eid);
+	}
+
+	public void updateByPrimaryKeySelective(Enterprise enterprise) {
+		// TODO Auto-generated method stub
+		enterpriseMapper.updateByPrimaryKeySelective(enterprise);
+	}
+
+	public void updateStatusById(Integer eid, Integer estatus) {
+		// TODO Auto-generated method stub
+		//enterpriseMapper.updateStatusById(eid,estatus);
+	   
+	}*/
+
+}

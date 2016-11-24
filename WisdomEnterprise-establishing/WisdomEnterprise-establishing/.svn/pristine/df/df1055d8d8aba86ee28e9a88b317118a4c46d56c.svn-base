@@ -1,0 +1,257 @@
+package cn.sirbox.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import cn.sirbox.model.Area;
+import cn.sirbox.model.AreaExample;
+import cn.sirbox.model.City;
+import cn.sirbox.model.CityExample;
+import cn.sirbox.model.Dept;
+import cn.sirbox.model.DeptEnterpriseExample;
+import cn.sirbox.model.DeptEnterpriseKey;
+import cn.sirbox.model.DeptExample;
+import cn.sirbox.model.Enterprise;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+
+import cn.sirbox.dao.AreaMapper;
+import cn.sirbox.dao.CityMapper;
+import cn.sirbox.dao.DeptEnterpriseMapper;
+import cn.sirbox.dao.DeptMapper;
+import cn.sirbox.dao.EnterpriseMapper;
+import cn.sirbox.dao.ProvinceMapper;
+import cn.sirbox.dao.UserDeptMapper;
+import cn.sirbox.dao.UserEnterpriseMapper;
+import cn.sirbox.dao.UserExtendMapper;
+import cn.sirbox.dao.UserUMapper;
+import cn.sirbox.model.EnterpriseExample;
+import cn.sirbox.model.Province;
+import cn.sirbox.model.ProvinceExample;
+import cn.sirbox.model.UserDeptKey;
+import cn.sirbox.model.UserEnterpriseExample;
+import cn.sirbox.model.UserEnterpriseKey;
+import cn.sirbox.model.UserExtend;
+import cn.sirbox.model.UserU;
+import cn.sirbox.model.UserUExample;
+import cn.sirbox.utils.config;
+
+@Service
+public class EnterpriseService {
+
+	@Autowired
+	private EnterpriseMapper enterpriseMapper;
+	
+	@Autowired
+    private UserUMapper userUMapper;
+	
+	@Autowired
+    private UserEnterpriseMapper userEnterpriseMapper;
+	
+	@Autowired
+    private UserExtendMapper userExtendMapper;
+	
+	@Autowired
+    private ProvinceMapper provinceMapper;
+	
+	@Autowired
+    private CityMapper cityMapper;
+	
+	@Autowired
+    private AreaMapper areaMapper;
+	
+	public Integer countByExample() {
+		// TODO Auto-generated method stub
+		return enterpriseMapper.countByExample(new EnterpriseExample());
+	}
+
+	
+
+    public void insertSelective(UserU userU, Enterprise enterprise) {
+        // TODO Auto-generated method stub
+        //添加用户和企业
+        userU.setEnabled(1);
+        userU.setStatus("enterprise");
+        userU.setCreatetime(new Date());
+        userU.setUpdatetime(new Date());
+        userUMapper.insertSelective(userU);
+        int uid=userUMapper.insertLastId();
+        //添加用户扩展表
+        UserExtend ue=new UserExtend();
+        ue.setUid(uid);
+        userExtendMapper.insertSelective(ue);
+        enterprise.setEnabled(1);
+        enterprise.setCreatetime(new Date());
+        enterprise.setUpdatetime(new Date());
+        enterpriseMapper.insertSelective(enterprise);
+        int eid=enterpriseMapper.insertLastId();
+        
+        //为用户和企业关联表添加数据
+        UserEnterpriseKey uep=new UserEnterpriseKey();
+        uep.setEid(eid);
+        uep.setUid(uid);
+        userEnterpriseMapper.insertSelective(uep);
+       
+    }
+
+    public Enterprise getEnterpriseById(Integer eid) {
+        // TODO Auto-generated method stub
+        EnterpriseExample ee=new EnterpriseExample();
+        ee.createCriteria().andEidEqualTo(eid).andEnabledEqualTo(1);
+        return enterpriseMapper.selectByExample(ee).get(0);
+    }
+    
+    public void updateStatusById(Integer eid, Integer estatus) {
+        // TODO Auto-generated method stub
+        //enterpriseMapper.updateStatusById(eid,estatus);
+        EnterpriseExample ee=new EnterpriseExample();
+        ee.createCriteria().andEidEqualTo(eid).andEnabledEqualTo(1);
+        Enterprise enterprise=new Enterprise();
+        enterprise.setEid(eid);
+        enterprise.setEstatus(estatus);
+        enterprise.setUpdatetime(new Date());
+       enterpriseMapper.updateByExampleSelective(enterprise, ee);
+       
+    }
+    
+    public void updateStatus(Enterprise enterprise){
+        EnterpriseExample ee=new EnterpriseExample();
+        ee.createCriteria().andEidEqualTo(enterprise.getEid()).andEnabledEqualTo(1);
+        enterprise.setUpdatetime(new Date());
+       enterpriseMapper.updateByExampleSelective(enterprise, ee);
+    }
+	
+
+    public void updateByPrimaryKeySelective(Enterprise enterprise) {
+        // TODO Auto-generated method stub
+        enterpriseMapper.updateByPrimaryKeySelective(enterprise);
+    }
+    
+    public List<UserEnterpriseKey> getUserEnterprise(Integer eid) {
+        // TODO Auto-generated method stub
+        UserEnterpriseExample uee=new UserEnterpriseExample();
+        uee.createCriteria().andEidEqualTo(eid);
+        return userEnterpriseMapper.selectByExample(uee);
+    }
+
+    public List<Province> getProvince() {
+        // TODO Auto-generated method stub
+        ProvinceExample pe=new ProvinceExample();
+        
+        return provinceMapper.selectByExample(pe);
+    }
+
+    public List<City> getCity(String name) {
+        // TODO Auto-generated method stub
+        ProvinceExample pe=new ProvinceExample();
+        pe.createCriteria().andNameEqualTo(name);
+        CityExample ce=new CityExample();
+        ce.createCriteria().andProvincecodeEqualTo(provinceMapper.selectByExample(pe).get(0).getCode());
+        return cityMapper.selectByExample(ce);
+    }
+
+    public List<Area> getArea(String name) {
+        // TODO Auto-generated method stub
+        CityExample ce=new CityExample();
+        ce.createCriteria().andNameEqualTo(name);
+        AreaExample ae=new AreaExample();
+        ae.createCriteria().andCitycodeEqualTo(cityMapper.selectByExample(ce).get(0).getCode());
+        return areaMapper.selectByExample(ae);
+    }
+
+   
+    public void updateImg(Enterprise enterprise) {
+        // TODO Auto-generated method stub
+        EnterpriseExample ee=new EnterpriseExample();
+        ee.createCriteria().andEidEqualTo(enterprise.getEid()).andEnabledEqualTo(1);
+        enterprise.setUpdatetime(new Date());
+        enterpriseMapper.updateByExampleSelective(enterprise, ee);
+    }
+
+    public void dele(Enterprise enterprise) {
+        // TODO Auto-generated method stub
+        //把企业状态设为禁用
+        enterprise.setEnabled(0);
+        enterprise.setUpdatetime(new Date());
+        enterpriseMapper.updateByPrimaryKeySelective(enterprise);
+        
+        //获取这个企业的用户，把这些用户的状态也设为禁用
+        UserEnterpriseExample ue=new UserEnterpriseExample();
+        ue.createCriteria().andEidEqualTo(enterprise.getEid());
+        List<UserEnterpriseKey> list=userEnterpriseMapper.selectByExample(ue);
+        for(int i=0;i<list.size();i++){
+            UserU user=userUMapper.selectByPrimaryKey(list.get(i).getUid());
+            user.setEnabled(0);
+            user.setUpdatetime(new Date());
+            userUMapper.updateByPrimaryKeySelective(user);
+        }
+    }
+
+    public List<Enterprise> selectAllEnterprise(Integer thispage, int pagenumber) {
+        // TODO Auto-generated method stub
+        EnterpriseExample ee=new EnterpriseExample();
+        
+        ee.createCriteria().andEnabledEqualTo(1);
+        PageHelper.startPage(thispage*pagenumber,pagenumber);
+        return enterpriseMapper.selectByExample(ee);
+    }
+
+
+
+    public List<Enterprise> searchenterprise(Integer thispage,Enterprise enterprise, String amount1, String amount2,Integer pagenumber) {
+        // TODO Auto-generated method stub
+        EnterpriseExample ee=new EnterpriseExample();
+        PageHelper.startPage(thispage*pagenumber, pagenumber);
+        if(enterprise.getEname()!=null&&!"".equals(enterprise.getEname())){
+            ee.createCriteria().andEnameLike(enterprise.getEname());
+        }
+        if(enterprise.getEbusines()!=null&&!"".equals(enterprise.getEbusines())){
+            ee.createCriteria().andEbusinesLike(enterprise.getEbusines());
+        }
+        if(enterprise.getEte()!=null&&!"".equals(enterprise.getEte())){
+            ee.createCriteria().andEteLike(enterprise.getEte());
+        }
+        if(enterprise.getEaddress()!=null && !enterprise.getEaddress().equals("---")){
+            ee.createCriteria().andEaddressLike(enterprise.getEaddress());
+        }
+        if(amount1!=null&&!"".equals(amount1)){
+            ee.createCriteria().andEamountGreaterThanOrEqualTo(Float.parseFloat(amount1));
+        }
+        if(amount2==null&&!"".equals(amount2)){
+            ee.createCriteria().andEamountLessThanOrEqualTo(Float.parseFloat(amount2));
+        }
+        if(enterprise.getEintention()!=null&&!"".equals(enterprise.getEintention())){
+            ee.createCriteria().andEintentionLike(enterprise.getEintention());
+        }
+        
+        if(enterprise.getEtype()!=null&&!"".equals(enterprise.getEtype())){
+            ee.createCriteria().andEtypeLike(enterprise.getEtype());
+        }
+        if(enterprise.getEfinancingbegin()!=null&&!"".equals(enterprise.getEfinancingbegin())){
+            ee.createCriteria().andEfinancingbeginGreaterThanOrEqualTo(enterprise.getEfinancingbegin());
+        }
+        if(enterprise.getEfinancingout()!=null&&!"".equals(enterprise.getEfinancingout())){
+            ee.createCriteria().andEfinancingoutLessThanOrEqualTo(enterprise.getEfinancingout());
+        }
+        if(enterprise.getEcontacts()!=null&&!"".equals(enterprise.getEcontacts())){
+            ee.createCriteria().andEcontactsLike(enterprise.getEcontacts());
+        }
+        if(enterprise.getEphone()!=null&&!"".equals(enterprise.getEphone())){
+            ee.createCriteria().andEphoneLike(enterprise.getEphone());
+        }
+        if(enterprise.getEemail()!=null&&!"".equals(enterprise.getEemail())){
+            ee.createCriteria().andEemailLike(enterprise.getEemail());
+        }
+        ee.createCriteria().andEnabledEqualTo(1);
+        
+        return enterpriseMapper.selectByExample(ee);
+    }
+
+
+
+   
+    
+
+}

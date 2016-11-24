@@ -1,0 +1,52 @@
+package cn.sirbox.service.impl;
+
+import java.util.List;
+import cn.sirbox.model.Enterprise;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.sirbox.dao.EnterpriseMapper;
+import cn.sirbox.model.EnterpriseExample;
+import cn.sirbox.model.UserU;
+import cn.sirbox.utils.config;
+
+@Service
+public class EnterpriseService {
+
+	@Autowired
+	private EnterpriseMapper enterpriseMapper;
+	
+	/*public Integer countByExample() {
+		// TODO Auto-generated method stub
+		return enterpriseMapper.countByExample(new EnterpriseExample());
+	}
+
+	public List<Enterprise> selectAllEnterprise(Integer thispage,Integer pagenumber) {
+		// TODO Auto-generated method stub
+		
+		//return enterpriseMapper.selectAllEnterprise(thispage,pagenumber);
+	    return null;
+	}
+
+	public void insertSelective(Enterprise enterprise) {
+		// TODO Auto-generated method stub
+		enterpriseMapper.insertSelective(enterprise);
+	}
+
+	public Enterprise selectByPrimaryKey(Integer eid) {
+		// TODO Auto-generated method stub
+		return enterpriseMapper.selectByPrimaryKey(eid);
+	}
+
+	public void updateByPrimaryKeySelective(Enterprise enterprise) {
+		// TODO Auto-generated method stub
+		enterpriseMapper.updateByPrimaryKeySelective(enterprise);
+	}
+
+	public void updateStatusById(Integer eid, Integer estatus) {
+		// TODO Auto-generated method stub
+		//enterpriseMapper.updateStatusById(eid,estatus);
+	   
+	}*/
+
+}

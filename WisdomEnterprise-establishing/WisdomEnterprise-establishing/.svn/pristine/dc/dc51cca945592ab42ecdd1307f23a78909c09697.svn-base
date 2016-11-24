@@ -1,0 +1,62 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script type="text/javascript">
+   function shenhe(ids){
+	     if(ids==2){
+	    	 document.getElementById("str").value=2;
+			 document.getElementById("frm").action="${pageContext.request.contextPath}/releaseinfo/edits.do";
+	     }else{
+	    	 document.getElementById("str").value=1;
+			 document.getElementById("frm").action="${pageContext.request.contextPath}/releaseinfo/edits.do";			 
+	     }
+	     document.getElementById("frm").submit();
+
+   }
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>发布信息查看页面</title>
+</head>
+<body>
+<form action="" id="frm">
+       <div>
+          <div>项目名称：<span>${releaseinfo.title}</span></div>
+          <div>
+          	<tr>
+          		发布者：<td>${releaseinfo.issuer}</td>
+          		发布时间：<td>${releaseinfo.createTime}</td>
+          	</tr>
+          	<tr>
+          		项目名称：<td>${releaseinfo.title}</td>
+          		项目类型：<td>${releaseinfo.itemType}</td>
+          		合作模式：<td>${releaseinfo.symbiosis}</td>
+          		项目所属行业：<td>${releaseinfo.itemBusiness}</td>
+          		项目地区：<td>${releaseinfo.itemArea}</td>
+          	</tr>
+            <tr>
+            	投资总额：<td>${releaseinfo.fundBudget}</td>
+            	
+            </tr>
+            <tr>
+            	项目主要内容：<td>${releaseinfo.itemContent}</td>
+            </tr>
+            <tr>
+            	项目联系信息:${releaseinfo.linkman}<br/>
+            	${releaseinfo.phone}<br/>
+            	${releaseinfo.email}<br/>
+            	${releaseinfo.address}<br/>
+            	${releaseinfo.faxnumber}
+            </tr>
+            <tr>
+	            <td><input type="button" value="审批通过" onclick="shenhe(2)"></td>
+	            <td><input type="button" value="审批不通过" onclick="shenhe(1)"></td>
+	            <input type="hidden" name="id" id="id" value="${releaseinfo.id}">
+	            <input type="hidden" name="str" id="str" value="">
+          </div>
+      </div>
+  </form>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+    <http auto-config="true">
+        <intercept-url pattern="/user/login.do" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/js/*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/css/*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/**" access="ROLE_USER"/>
+
+        <form-login
+                login-page="/user/login.do"
+                authentication-failure-url="/user/login.do?error=true"
+                default-target-url="/user/index.do"/>
+
+        <logout
+                invalidate-session="true"
+                logout-success-url="/user/login.do"
+                logout-url="/user/logout.do"/>
+
+    </http>
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="myUserDetailsService"/>
+       <authentication-provider>
+            <jdbc-user-service data-source-ref="dataSource"/>
+        </authentication-provider>
+
+    </authentication-manager>
+
+
+
+</beans:beans>

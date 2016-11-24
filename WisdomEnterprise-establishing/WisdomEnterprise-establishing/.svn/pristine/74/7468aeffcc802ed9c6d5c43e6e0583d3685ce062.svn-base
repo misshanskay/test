@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.sirbox.dao.MatchsMapper" >
+  <resultMap id="BaseResultMap" type="cn.sirbox.model.Matchs" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="match_time" property="matchTime" jdbcType="VARCHAR" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="match_degree" property="matchDegree" jdbcType="VARCHAR" />
+    <result column="cooperation_mode" property="cooperationMode" jdbcType="VARCHAR" />
+    <result column="project_business" property="projectBusiness" jdbcType="VARCHAR" />
+    <result column="project_area" property="projectArea" jdbcType="VARCHAR" />
+    <result column="fund_budget" property="fundBudget" jdbcType="VARCHAR" />
+    <result column="project_unit" property="projectUnit" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="linkman" property="linkman" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="INTEGER" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="fax_number" property="faxNumber" jdbcType="VARCHAR" />
+    <result column="issue_time" property="issueTime" jdbcType="VARCHAR" />
+    <result column="issuer" property="issuer" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="project_financing_mode" property="projectFinancingMode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.sirbox.model.Matchs" extends="BaseResultMap" >
+    <result column="project_content" property="projectContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, company_name, match_time, project_name, match_degree, cooperation_mode, project_business, 
+    project_area, fund_budget, project_unit, address, linkman, phone, email, fax_number, 
+    issue_time, issuer, update_time, city, project_financing_mode
+  </sql>
+  <sql id="Blob_Column_List" >
+    project_content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="cn.sirbox.model.MatchsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from matchs
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap">
+    select 
+	<include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from matchs 
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from matchs
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from matchs
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.sirbox.model.MatchsExample" >
+    delete from matchs
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.sirbox.model.Matchs" >
+    insert into matchs (id, company_name, match_time, 
+      project_name, match_degree, cooperation_mode, 
+      project_business, project_area, fund_budget, 
+      project_unit, address, linkman, 
+      phone, email, fax_number, 
+      issue_time, issuer, update_time, city,
+      project_financing_mode, project_content
+      )
+    values (#{id,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{matchTime,jdbcType=VARCHAR}, 
+      #{projectName,jdbcType=VARCHAR}, #{matchDegree,jdbcType=VARCHAR}, #{cooperationMode,jdbcType=VARCHAR}, 
+      #{projectBusiness,jdbcType=VARCHAR}, #{projectArea,jdbcType=VARCHAR}, #{fundBudget,jdbcType=VARCHAR}, 
+      #{projectUnit,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{linkman,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{faxNumber,jdbcType=VARCHAR}, 
+      #{issueTime,jdbcType=VARCHAR}, #{issuer,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+      #{projectFinancingMode,jdbcType=VARCHAR}, #{projectContent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.sirbox.model.Matchs" >
+    insert into matchs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyName != null" >
+        company_name,
+      </if>
+      <if test="matchTime != null" >
+        match_time,
+      </if>
+      <if test="projectName != null" >
+        project_name,
+      </if>
+      <if test="matchDegree != null" >
+        match_degree,
+      </if>
+      <if test="cooperationMode != null" >
+        cooperation_mode,
+      </if>
+      <if test="projectBusiness != null" >
+        project_business,
+      </if>
+      <if test="projectArea != null" >
+        project_area,
+      </if>
+      <if test="fundBudget != null" >
+        fund_budget,
+      </if>
+      <if test="projectUnit != null" >
+        project_unit,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="linkman != null" >
+        linkman,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="faxNumber != null" >
+        fax_number,
+      </if>
+      <if test="issueTime != null" >
+        issue_time,
+      </if>
+      <if test="issuer != null" >
+        issuer,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="projectFinancingMode != null" >
+        project_financing_mode,
+      </if>
+      <if test="projectContent != null" >
+        project_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="matchTime != null" >
+        #{matchTime,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null" >
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="matchDegree != null" >
+        #{matchDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperationMode != null" >
+        #{cooperationMode,jdbcType=VARCHAR},
+      </if>
+      <if test="projectBusiness != null" >
+        #{projectBusiness,jdbcType=VARCHAR},
+      </if>
+      <if test="projectArea != null" >
+        #{projectArea,jdbcType=VARCHAR},
+      </if>
+      <if test="fundBudget != null" >
+        #{fundBudget,jdbcType=VARCHAR},
+      </if>
+      <if test="projectUnit != null" >
+        #{projectUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=INTEGER},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="faxNumber != null" >
+        #{faxNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="issueTime != null" >
+        #{issueTime,jdbcType=VARCHAR},
+      </if>
+      <if test="issuer != null" >
+        #{issuer,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="projectFinancingMode != null" >
+        #{projectFinancingMode,jdbcType=VARCHAR},
+      </if>
+      <if test="projectContent != null" >
+        #{projectContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" resultType="java.lang.Integer" >
+    select count(*) from matchs
+<!--     <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if> -->
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update matchs
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.companyName != null" >
+        company_name = #{record.companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.matchTime != null" >
+        match_time = #{record.matchTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectName != null" >
+        project_name = #{record.projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.matchDegree != null" >
+        match_degree = #{record.matchDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cooperationMode != null" >
+        cooperation_mode = #{record.cooperationMode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectBusiness != null" >
+        project_business = #{record.projectBusiness,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectArea != null" >
+        project_area = #{record.projectArea,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fundBudget != null" >
+        fund_budget = #{record.fundBudget,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectUnit != null" >
+        project_unit = #{record.projectUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null" >
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.linkman != null" >
+        linkman = #{record.linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        phone = #{record.phone,jdbcType=INTEGER},
+      </if>
+      <if test="record.email != null" >
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.faxNumber != null" >
+        fax_number = #{record.faxNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issueTime != null" >
+        issue_time = #{record.issueTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issuer != null" >
+        issuer = #{record.issuer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null" >
+        city = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectFinancingMode != null" >
+        project_financing_mode = #{record.projectFinancingMode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectContent != null" >
+        project_content = #{record.projectContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update matchs
+    set id = #{record.id,jdbcType=INTEGER},
+      company_name = #{record.companyName,jdbcType=VARCHAR},
+      match_time = #{record.matchTime,jdbcType=VARCHAR},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      match_degree = #{record.matchDegree,jdbcType=VARCHAR},
+      cooperation_mode = #{record.cooperationMode,jdbcType=VARCHAR},
+      project_business = #{record.projectBusiness,jdbcType=VARCHAR},
+      project_area = #{record.projectArea,jdbcType=VARCHAR},
+      fund_budget = #{record.fundBudget,jdbcType=VARCHAR},
+      project_unit = #{record.projectUnit,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      linkman = #{record.linkman,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=INTEGER},
+      email = #{record.email,jdbcType=VARCHAR},
+      fax_number = #{record.faxNumber,jdbcType=VARCHAR},
+      issue_time = #{record.issueTime,jdbcType=VARCHAR},
+      issuer = #{record.issuer,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=VARCHAR},
+      city = #{record.city,jdbcType=VARCHAR},
+      project_financing_mode = #{record.projectFinancingMode,jdbcType=VARCHAR},
+      project_content = #{record.projectContent,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update matchs
+    set id = #{record.id,jdbcType=INTEGER},
+      company_name = #{record.companyName,jdbcType=VARCHAR},
+      match_time = #{record.matchTime,jdbcType=VARCHAR},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      match_degree = #{record.matchDegree,jdbcType=VARCHAR},
+      cooperation_mode = #{record.cooperationMode,jdbcType=VARCHAR},
+      project_business = #{record.projectBusiness,jdbcType=VARCHAR},
+      project_area = #{record.projectArea,jdbcType=VARCHAR},
+      fund_budget = #{record.fundBudget,jdbcType=VARCHAR},
+      project_unit = #{record.projectUnit,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      linkman = #{record.linkman,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=INTEGER},
+      email = #{record.email,jdbcType=VARCHAR},
+      fax_number = #{record.faxNumber,jdbcType=VARCHAR},
+      issue_time = #{record.issueTime,jdbcType=VARCHAR},
+      issuer = #{record.issuer,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=VARCHAR},
+      city = #{record.city,jdbcType=VARCHAR},
+      project_financing_mode = #{record.projectFinancingMode,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.sirbox.model.Matchs" >
+    update matchs
+    <set >
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="matchTime != null" >
+        match_time = #{matchTime,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null" >
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="matchDegree != null" >
+        match_degree = #{matchDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperationMode != null" >
+        cooperation_mode = #{cooperationMode,jdbcType=VARCHAR},
+      </if>
+      <if test="projectBusiness != null" >
+        project_business = #{projectBusiness,jdbcType=VARCHAR},
+      </if>
+      <if test="projectArea != null" >
+        project_area = #{projectArea,jdbcType=VARCHAR},
+      </if>
+      <if test="fundBudget != null" >
+        fund_budget = #{fundBudget,jdbcType=VARCHAR},
+      </if>
+      <if test="projectUnit != null" >
+        project_unit = #{projectUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        linkman = #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=INTEGER},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="faxNumber != null" >
+        fax_number = #{faxNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="issueTime != null" >
+        issue_time = #{issueTime,jdbcType=VARCHAR},
+      </if>
+      <if test="issuer != null" >
+        issuer = #{issuer,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="projectFinancingMode != null" >
+        project_financing_mode = #{projectFinancingMode,jdbcType=VARCHAR},
+      </if>
+      <if test="projectContent != null" >
+        project_content = #{projectContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.sirbox.model.Matchs" >
+    update matchs
+    set company_name = #{companyName,jdbcType=VARCHAR},
+      match_time = #{matchTime,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      match_degree = #{matchDegree,jdbcType=VARCHAR},
+      cooperation_mode = #{cooperationMode,jdbcType=VARCHAR},
+      project_business = #{projectBusiness,jdbcType=VARCHAR},
+      project_area = #{projectArea,jdbcType=VARCHAR},
+      fund_budget = #{fundBudget,jdbcType=VARCHAR},
+      project_unit = #{projectUnit,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      linkman = #{linkman,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=INTEGER},
+      email = #{email,jdbcType=VARCHAR},
+      fax_number = #{faxNumber,jdbcType=VARCHAR},
+      issue_time = #{issueTime,jdbcType=VARCHAR},
+      issuer = #{issuer,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      project_financing_mode = #{projectFinancingMode,jdbcType=VARCHAR},
+      project_content = #{projectContent,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.sirbox.model.Matchs" >
+    update matchs
+    set company_name = #{companyName,jdbcType=VARCHAR},
+      match_time = #{matchTime,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      match_degree = #{matchDegree,jdbcType=VARCHAR},
+      cooperation_mode = #{cooperationMode,jdbcType=VARCHAR},
+      project_business = #{projectBusiness,jdbcType=VARCHAR},
+      project_area = #{projectArea,jdbcType=VARCHAR},
+      fund_budget = #{fundBudget,jdbcType=VARCHAR},
+      project_unit = #{projectUnit,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      linkman = #{linkman,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=INTEGER},
+      email = #{email,jdbcType=VARCHAR},
+      fax_number = #{faxNumber,jdbcType=VARCHAR},
+      issue_time = #{issueTime,jdbcType=VARCHAR},
+      issuer = #{issuer,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      project_financing_mode = #{projectFinancingMode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

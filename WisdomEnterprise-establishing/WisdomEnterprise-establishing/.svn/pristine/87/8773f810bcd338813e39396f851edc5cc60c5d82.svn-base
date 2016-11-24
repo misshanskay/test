@@ -1,0 +1,45 @@
+package cn.sirbox.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+
+import cn.sirbox.dao.UorderMapper;
+import cn.sirbox.model.Uorder;
+import cn.sirbox.model.UorderExample;
+
+@Service
+public class UorderService {
+
+    @Autowired
+    private UorderMapper uorderMapper;
+    
+    public List<Uorder> selectAllOrder(Integer thispage, Integer pagenumber) {
+        // TODO Auto-generated method stub
+        UorderExample oe=new UorderExample();
+        PageHelper.startPage(thispage,pagenumber);
+        return uorderMapper.selectByExample(oe);
+    }
+
+    public List<Uorder> selectAllOrder1(Integer thispage, Integer pagenumber) {
+        // TODO Auto-generated method stub
+        UorderExample oe=new UorderExample();
+        oe.createCriteria().andStatusEqualTo(0);
+        PageHelper.startPage(thispage,pagenumber);
+        return uorderMapper.selectByExample(oe);
+    }
+
+    public List<Uorder> selectAllOrder2(Integer thispage, Integer pagenumber) {
+        // TODO Auto-generated method stub
+        UorderExample oe=new UorderExample();
+        oe.createCriteria().andUpdatetimeBetween(new Date(new Date().getTime()-24*60*60*1000), new Date());
+        PageHelper.startPage(thispage,pagenumber);
+        return uorderMapper.selectByExample(oe);
+    }
+
+}

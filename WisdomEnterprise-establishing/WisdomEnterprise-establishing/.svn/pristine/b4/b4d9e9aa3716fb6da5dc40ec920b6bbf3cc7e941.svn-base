@@ -1,0 +1,145 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%><!-- 这是jstl标签 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>发布信息显示页面</title>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-2.2.3.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#select").click(function() {
+			if (this.checked) {
+				$("input[name='id']").each(function() {
+					this.checked = true
+				});
+			} else {
+				$("input[name='id']").each(function() {
+					this.checked = false
+				});
+			}
+
+		})
+	})
+
+	function edits() {
+		/*  var str="";
+		 $("input[name='ids']").each(function(){
+			 if(this.checked==true)
+			   str+=$(this).val()+",";
+			  }); */
+		document.getElementById("frm").action = "${pageContext.request.contextPath}/releaseinfo/edits.do";
+		document.getElementById("frm").submit();
+	}
+
+	//当选择按照状态查询时
+	$(document)
+			.ready(
+					function() {
+						$("#state")
+								.change(
+										function() {
+											//获取被选中的选项
+											//var datas = $(this).children("option:selected").val(); 
+											document.getElementById("frm").action = "${pageContext.request.contextPath}/releaseinfo/edit.do";
+											document.getElementById("frm")
+													.submit();
+										}
+
+								)
+					}
+
+			)
+
+	$(document)
+			.ready(
+					function() {
+						$("#itemBusiness")
+								.change(
+										function() {
+											//var datas = $(this).children("option:selected").val();
+											document.getElementById("frm").action = "${pageContext.request.contextPath}/releaseinfo/findByIB.do";
+											document.getElementById("frm")
+													.submit();
+										})
+					})
+</script>
+</head>
+<body style="width: 1000px">
+	<form action="" id="frm">
+		<input type="hidden" id="str" name="str" value="2">
+		<table width="%100" border="1">
+			<tr>
+				<td>招商信息</td>
+				<td>
+					<select name="">
+						<option>全部行业</option>
+						<option>其他行业</option>
+						<option>畜牧林业</option>
+						<option>PPP项目</option>
+						<option>园林园艺</option>
+						<option>基础设施</option>
+						<option>现代服务</option>
+						<option>供水服务</option>
+					</select>
+				</td>
+				<td>
+					<select name="">
+						<option>所有发布者</option>
+						<option>濮阳县</option>
+						<option>企业</option>
+					</select>
+				</td>
+				<td><a
+					href="${pageContext.request.contextPath}/releaseinfo/toAdd.do">发布信息</a></td>
+				<td>
+					<input type="button" value="企业查询" onclick="query()">
+				</td>
+				<td><input type="button" value="批量审批" onclick="edits()">
+				</td>
+				<td><a href="${pageContext.request.contextPath}/releaseinfo/export.do"><input type="button" value="下载招商信息"></a></td>
+			</tr>
+			<tr>
+				<td>选择</td>
+				<td>发布时间</td>
+				<td>项目名称</td>
+				<td>发 布 人</td>
+				<td>项目类型</td>
+				<td>状 &nbsp;态</td>
+				<td>操 作</td>
+			</tr>
+				<c:forEach var="releaseinfo" items="${riList}">
+				<tr>
+					<td><input type="checkbox" id="id" name="id" value="${releaseinfo.id}"></td>
+					<td>${releaseinfo.createTime}</td>					
+					<td>${releaseinfo.projectName}</td>					
+					<td>${releaseinfo.issuer}</td>					
+					<td>${releaseinfo.projectType}</td>					
+					<td>
+						<c:if test="${releaseinfo.state==3||releaseinfo.state==2}">
+							已审核						
+						</c:if> 
+						<c:if test="${releaseinfo.state==1}">
+							待审核
+						</c:if>
+					</td>					
+					<td>
+						<c:if test="${releaseinfo.state==3||releaseinfo.state==2}">
+							<a href="${pageContext.request.contextPath}/releaseinfo/check.do?id=${releaseinfo.id}">查看</a>					
+						</c:if> 
+						<c:if test="${releaseinfo.state==1}">
+							<a href="${pageContext.request.contextPath}/releaseinfo/shenhe.do?id=${releaseinfo.id}">审核</a>
+						</c:if>
+							<a href="${pageContext.request.contextPath}/releaseinfo/toUpdate.do?id=${releaseinfo.id}">编辑</a>
+							<a href="${pageContext.request.contextPath}/releaseinfo/delete.do?id=${releaseinfo.id}">删除</a>
+					</td>					
+				</tr>
+			</c:forEach>
+			<tr>
+				<td colspan="7"><input type="checkbox" id="select" name="select">全选</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
